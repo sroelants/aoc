@@ -13,9 +13,9 @@ struct Item {
 impl Item {
     fn priority(&self) -> u32 {
         if self.item.is_ascii_lowercase() {
-            u32::try_from(self.item).unwrap() - 96
+            u32::from(self.item) - 96
         } else {
-            u32::try_from(self.item).unwrap() - 38
+            u32::from(self.item) - 38
         }
     }
 }
