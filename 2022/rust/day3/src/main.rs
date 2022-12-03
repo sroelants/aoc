@@ -48,21 +48,30 @@ impl From<&str> for Backpack {
     fn from(input: &str) -> Backpack {
         let compartment_size: usize = input.len() / 2;
 
-        let left: HashSet<Item> = input
+        let left: HashSet<Item> = input[0..compartment_size]
             .chars()
-            .take(compartment_size)
-            .map(|c| c.into())
+            .map(|c| Item::from(c))
             .collect();
 
-        let right: HashSet<Item> = input
+        let right: HashSet<Item> = input[compartment_size..(compartment_size * 2)]
             .chars()
-            .skip(compartment_size)
-            .map(|c| c.into())
+            .map(|c| Item::from(c))
             .collect();
 
         Backpack { left, right }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Parsing
+////////////////////////////////////////////////////////////////////////////////
+fn parse_input(input: &str) -> Vec<Backpack> {
+    input.lines().map(|line| Backpack::from(line)).collect()
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Solutions
+////////////////////////////////////////////////////////////////////////////////
 
 fn main() {
     let input = read_to_string("./src/input.txt").expect("Failed to read input");
@@ -84,17 +93,13 @@ fn part1(input: &Vec<Backpack>) -> u32 {
 fn part2(input: &Vec<Backpack>) -> u32 {
     let groups = input.into_iter().tuples::<(_, _, _)>();
     groups
-        // Find common intersection using bitwise and
+        // Find common intersection using bitwise and on &HashSet
         .map(|(one, two, three)| &(&one.all() & &two.all()) & &three.all())
         // Unwrap the item from the HashSet
         .map(|intersection| intersection.into_iter().next().expect("No item in common"))
         // Convert to a numerical value
         .map(|item| item.priority())
         .sum()
-}
-
-fn parse_input(input: &str) -> Vec<Backpack> {
-    input.lines().map(|line| line.into()).collect()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
