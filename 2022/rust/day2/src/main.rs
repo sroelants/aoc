@@ -11,18 +11,18 @@ struct ParsedInput {
     data: Vec<Round>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-enum Hand {
-    Rock,
-    Paper,
-    Scissors,
-}
-
 #[derive(Debug, PartialEq, Eq)]
 enum GameResult {
     Win,
     Lose,
     Tie,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+enum Hand {
+    Rock,
+    Paper,
+    Scissors,
 }
 
 impl Hand {
@@ -168,10 +168,12 @@ fn complicated_round(input: &str) -> ParseResult<Round> {
         separated_pair(their_hand, space1, result),
         |(them, result): (Hand, GameResult)| match result {
             GameResult::Tie => Round { us: them, them },
+
             GameResult::Win => Round {
                 us: them.loses_against(),
                 them,
             },
+
             GameResult::Lose => Round {
                 us: them.wins_against(),
                 them,
